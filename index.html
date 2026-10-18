@@ -223,7 +223,6 @@
       width: 100%;
     }
 
-    /* Hero Section matching screenshot */
     .hero-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -557,7 +556,7 @@
   <!-- Main Content Container -->
   <main class="main-container">
     
-    <!-- Hero Banner Section matching exact screenshot layout -->
+    <!-- Hero Banner Section -->
     <section class="hero-card">
       <div class="hero-tag" id="txt-hero-tag">PORTAL RASMI PELAJAR KTE PRA-U ASTANA</div>
       
@@ -651,17 +650,42 @@
         <div class="tab" id="tab-teacher" onclick="switchTab('teacher')">Guru / Cikgu</div>
       </div>
 
-      <!-- Student Login Form -->
+      <!-- Student Auth Forms -->
       <div id="form-student-auth">
-        <div class="form-group">
-          <label>E-mel Pelajar</label>
-          <input type="email" id="student-email" class="form-control" required>
+        <div class="tab-group" style="margin-bottom: 1rem;">
+          <div class="tab active" id="subtab-s-login" onclick="switchStudentSubTab('login')">Log Masuk</div>
+          <div class="tab" id="subtab-s-register" onclick="switchStudentSubTab('register')">Daftar Pelajar</div>
         </div>
-        <div class="form-group">
-          <label>Kata Laluan</label>
-          <input type="password" id="student-pass" class="form-control" required>
+
+        <!-- Student Login -->
+        <div id="student-login-box">
+          <div class="form-group">
+            <label>E-mel Pelajar</label>
+            <input type="email" id="student-email" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label>Kata Laluan</label>
+            <input type="password" id="student-pass" class="form-control" required>
+          </div>
+          <button type="button" class="btn btn-gold" style="width: 100%; margin-top: 0.5rem;" onclick="loginStudent()">Log Masuk Pelajar</button>
         </div>
-        <button type="button" class="btn btn-gold" style="width: 100%; margin-top: 0.5rem;" onclick="loginStudent()">Log Masuk Pelajar</button>
+
+        <!-- Student Register -->
+        <div id="student-register-box" class="hidden">
+          <div class="form-group">
+            <label>E-mel Pelajar</label>
+            <input type="email" id="student-reg-email" class="form-control" placeholder="nama@gmail.com" required>
+          </div>
+          <div class="form-group">
+            <label>Kata Laluan</label>
+            <input type="password" id="student-reg-pass" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label>Sahkan Kata Laluan</label>
+            <input type="password" id="student-reg-pass-confirm" class="form-control" required>
+          </div>
+          <button type="button" class="btn btn-gold" style="width: 100%; margin-top: 0.5rem;" onclick="registerStudent()">Daftar Akaun Pelajar</button>
+        </div>
       </div>
 
       <!-- Teacher Auth Form -->
@@ -773,6 +797,10 @@
     ];
 
     let registeredTeachers = JSON.parse(localStorage.getItem('ktea_teachers')) || [];
+    let registeredStudents = JSON.parse(localStorage.getItem('ktea_student_users')) || [
+      { email: "zaki@gmail.com", pass: "123456" },
+      { email: "sarah@gmail.com", pass: "123456" }
+    ];
 
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('lang-select').addEventListener('change', (e) => {
@@ -889,6 +917,13 @@
       document.getElementById('form-teacher-auth').classList.toggle('hidden', role !== 'teacher');
     }
 
+    function switchStudentSubTab(action) {
+      document.getElementById('subtab-s-login').classList.toggle('active', action === 'login');
+      document.getElementById('subtab-s-register').classList.toggle('active', action === 'register');
+      document.getElementById('student-login-box').classList.toggle('hidden', action !== 'login');
+      document.getElementById('student-register-box').classList.toggle('hidden', action !== 'register');
+    }
+
     function switchTeacherSubTab(action) {
       document.getElementById('subtab-t-login').classList.toggle('active', action === 'login');
       document.getElementById('subtab-t-register').classList.toggle('active', action === 'register');
@@ -896,8 +931,39 @@
       document.getElementById('teacher-register-box').classList.toggle('hidden', action !== 'register');
     }
 
+    function registerStudent() {
+      const email = document.getElementById('student-reg-email').value.trim().toLowerCase();
+      const pass = document.getElementById('student-reg-pass').value.trim();
+      const confirmPass = document.getElementById('student-reg-pass-confirm').value.trim();
+
+      if (!email || !pass || !confirmPass) {
+        alert("Sila isi semua maklumat pendaftaran.");
+        return;
+      }
+
+      if (pass !== confirmPass) {
+        alert("Pengesahan kata laluan tidak sepadan! Sila semak semula.");
+        return;
+      }
+
+      const existing = registeredStudents.find(s => s.email === email);
+      if (existing) {
+        alert("E-mel ini telah berdaftar. Sila log masuk.");
+        switchStudentSubTab('login');
+        document.getElementById('student-email').value = email;
+        return;
+      }
+
+      registeredStudents.push({ email, pass });
+      localStorage.setItem('ktea_student_users', JSON.stringify(registeredStudents));
+
+      alert("Akaun pelajar berjaya didaftarkan! Sila log masuk.");
+      switchStudentSubTab('login');
+      document.getElementById('student-email').value = email;
+    }
+
     function loginStudent() {
-      const email = document.getElementById('student-email').value.trim();
+      const email = document.getElementById('student-email').value.trim().toLowerCase();
       const pass = document.getElementById('student-pass').value.trim();
 
       if (!email || !pass) {
@@ -905,13 +971,24 @@
         return;
       }
 
-      currentUser = { role: 'student', email: email };
-      onLoginSuccess();
+      const found = registeredStudents.find(s => s.email === email && s.pass === pass);
+
+      if (found) {
+        currentUser = { role: 'student', email: email };
+        onLoginSuccess();
+      } else {
+        alert("Akaun tidak wujud atau kata laluan salah. Sila semak semula atau daftar akaun baru.");
+      }
     }
 
     function loginTeacher() {
       const email = document.getElementById('teacher-login-email').value.trim().toLowerCase();
       const pass = document.getElementById('teacher-login-pass').value.trim();
+
+      if (!email || !pass) {
+        alert("Sila isi e-mel dan kata laluan guru.");
+        return;
+      }
 
       const found = registeredTeachers.find(t => t.email === email && t.pass === pass);
 
@@ -919,7 +996,7 @@
         currentUser = { role: 'teacher', email: email };
         onLoginSuccess();
       } else {
-        alert("E-mel atau kata laluan guru tidak tepat.");
+        alert("Akaun guru tidak wujud atau kata laluan salah.");
       }
     }
 
