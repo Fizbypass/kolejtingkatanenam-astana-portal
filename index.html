@@ -4,155 +4,419 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kolej Tingkatan Enam Pra-Universiti Astana</title>
+  <!-- Google Fonts for Luxury Aesthetic -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
   <style>
     :root {
-      --bg-color: #0b0c10;
-      --card-bg: #1f2833;
-      --text-main: #c5c6c7;
-      --text-muted: #8892b0;
-      --accent-gold: #d4af37;
-      --accent-gold-hover: #f3e5ab;
-      --accent-silver: #c0c0c0;
-      --border-color: #333333;
-      --danger: #e63946;
+      --bg-dark: #08080a;
+      --card-bg: rgba(18, 18, 22, 0.75);
+      --card-border: rgba(212, 175, 55, 0.25);
+      --card-border-light: rgba(255, 255, 255, 0.08);
+      --gold-primary: #d4af37;
+      --gold-light: #f3e5ab;
+      --gold-gradient: linear-gradient(135deg, #f3e5ab 0%, #d4af37 50%, #aa7c11 100%);
+      --gold-hover: linear-gradient(135deg, #fff3c4 0%, #e5c158 50%, #c49218 100%);
+      --text-gold: #e5c158;
+      --text-main: #e2e8f0;
+      --text-muted: #94a3b8;
+      --danger: #ef4444;
+      --font-serif: 'Cinzel', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     body {
-      background-color: var(--bg-color);
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(212, 175, 55, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(212, 175, 55, 0.03) 0%, transparent 40%);
+      background-attachment: fixed;
       color: var(--text-main);
+      font-family: var(--font-sans);
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
       line-height: 1.6;
     }
 
+    /* Header Navigation */
     header {
-      background: linear-gradient(180deg, #121212 0%, var(--bg-color) 100%);
-      border-bottom: 1px solid var(--accent-gold);
-      padding: 1.5rem 2rem;
+      background: rgba(8, 8, 10, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+      padding: 1.2rem 2.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
 
-    .brand h1 {
-      color: var(--accent-gold);
+    .brand-container {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    .brand-logo-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 1.5px solid var(--gold-primary);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
       font-size: 1.5rem;
-      letter-spacing: 1px;
+      font-weight: 800;
+      color: var(--gold-light);
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, rgba(0,0,0,0.8) 100%);
+    }
+
+    .brand-text h1 {
+      font-family: var(--font-serif);
+      color: var(--gold-light);
+      font-size: 1.15rem;
+      letter-spacing: 1.5px;
       font-weight: 700;
       text-transform: uppercase;
+      line-height: 1.2;
     }
 
-    .brand p {
-      color: var(--accent-silver);
-      font-size: 0.85rem;
+    .brand-text p {
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-top: 2px;
     }
 
-    .controls {
+    .header-controls {
       display: flex;
       align-items: center;
       gap: 1rem;
     }
 
-    select, button, input {
-      background-color: var(--card-bg);
+    /* Status Pill */
+    .status-pill {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      padding: 0.4rem 0.9rem;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+    }
+
+    .status-badge {
+      background: var(--gold-gradient);
+      color: #000;
+      font-weight: 800;
+      padding: 0.15rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      letter-spacing: 0.5px;
+    }
+
+    .status-user {
       color: var(--text-main);
-      border: 1px solid var(--border-color);
-      padding: 0.6rem 1rem;
-      border-radius: 4px;
-      font-size: 0.9rem;
-      outline: none;
-      transition: all 0.3s ease;
+      font-weight: 500;
     }
 
-    select:focus, input:focus {
-      border-color: var(--accent-gold);
-    }
-
-    button {
+    /* Buttons & Inputs */
+    .btn {
+      font-family: var(--font-sans);
+      font-weight: 700;
+      font-size: 0.82rem;
+      padding: 0.65rem 1.3rem;
+      border-radius: 8px;
       cursor: pointer;
-      background: linear-gradient(135deg, var(--accent-gold) 0%, #aa7c11 100%);
-      color: #000;
-      font-weight: 600;
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
       border: none;
+      outline: none;
     }
 
-    button:hover {
-      background: linear-gradient(135deg, var(--accent-gold-hover) 0%, var(--accent-gold) 100%);
-    }
-
-    button.secondary {
-      background: transparent;
-      color: var(--accent-silver);
-      border: 1px solid var(--accent-silver);
-    }
-
-    button.secondary:hover {
-      background: var(--accent-silver);
+    .btn-gold {
+      background: var(--gold-gradient);
       color: #000;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.25);
     }
 
-    button.danger {
+    .btn-gold:hover {
+      background: var(--gold-hover);
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--text-main);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+    }
+
+    .btn-outline:hover {
+      background: rgba(212, 175, 55, 0.1);
+      border-color: var(--gold-primary);
+      color: var(--gold-light);
+    }
+
+    .btn-outline-gold {
+      background: transparent;
+      color: var(--gold-primary);
+      border: 1px solid var(--gold-primary);
+    }
+
+    .btn-outline-gold:hover {
+      background: rgba(212, 175, 55, 0.15);
+      color: var(--gold-light);
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+
+    .btn-danger:hover {
       background: var(--danger);
       color: #fff;
     }
 
-    .container {
-      max-width: 1100px;
-      margin: 2rem auto;
+    select.lang-select {
+      background: rgba(20, 20, 25, 0.9);
+      color: var(--text-main);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      outline: none;
+      cursor: pointer;
+    }
+
+    select.lang-select:focus {
+      border-color: var(--gold-primary);
+    }
+
+    /* Layout Containers */
+    .main-container {
+      max-width: 1200px;
+      margin: 2.5rem auto;
       padding: 0 1.5rem;
       flex: 1;
       width: 100%;
     }
 
-    .auth-banner {
-      background: rgba(31, 40, 51, 0.6);
-      border-left: 4px solid var(--accent-gold);
-      padding: 1rem 1.5rem;
-      margin-bottom: 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-radius: 0 4px 4px 0;
+    /* Hero Section matching screenshot */
+    .hero-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 3.5rem 3rem;
+      margin-bottom: 3rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      position: relative;
+      overflow: hidden;
     }
 
-    .user-status {
-      font-size: 0.95rem;
+    .hero-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--gold-gradient);
     }
 
-    .badge {
+    .hero-tag {
       display: inline-block;
-      padding: 0.2rem 0.6rem;
-      border-radius: 12px;
-      font-size: 0.75rem;
+      background: rgba(212, 175, 55, 0.08);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      color: var(--gold-light);
+      font-size: 0.72rem;
       font-weight: 700;
+      letter-spacing: 2px;
       text-transform: uppercase;
-      margin-left: 0.5rem;
+      padding: 0.35rem 1rem;
+      border-radius: 30px;
+      margin-bottom: 1.5rem;
     }
 
-    .badge-teacher {
-      background: var(--accent-gold);
-      color: #000;
+    .hero-title {
+      font-family: var(--font-serif);
+      font-size: 2.6rem;
+      line-height: 1.25;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 1.2rem;
+      max-width: 900px;
+      text-transform: uppercase;
     }
 
-    .badge-student {
-      background: var(--accent-silver);
-      color: #000;
+    .hero-title span {
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
+    .hero-desc {
+      color: var(--text-muted);
+      font-size: 1.02rem;
+      max-width: 800px;
+      margin-bottom: 2.2rem;
+      font-weight: 400;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .scroll-indicator {
+      display: flex;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .scroll-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      color: var(--gold-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .scroll-btn:hover {
+      border-color: var(--gold-primary);
+      background: rgba(212, 175, 55, 0.15);
+      transform: translateY(3px);
+    }
+
+    /* Content Cards Grid */
+    .section-title {
+      font-family: var(--font-serif);
+      color: var(--gold-light);
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(212, 175, 55, 0.3) 0%, transparent 100%);
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .student-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border-light);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .student-card:hover {
+      border-color: rgba(212, 175, 55, 0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .student-img-container {
+      width: 100%;
+      height: 220px;
+      background: #000;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .student-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .student-info {
+      padding: 1.2rem;
+      flex: 1;
+    }
+
+    .student-name {
+      font-family: var(--font-serif);
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+    }
+
+    .student-class {
+      color: var(--gold-primary);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 0.9rem;
+    }
+
+    .student-meta {
+      font-size: 0.85rem;
+      color: var(--text-main);
+      margin-bottom: 0.4rem;
+    }
+
+    .student-meta strong {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .student-actions {
+      padding: 0.8rem 1.2rem;
+      border-top: 1px solid var(--card-border-light);
+      background: rgba(0,0,0,0.2);
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    /* Modal Styling */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -165,41 +429,46 @@
     }
 
     .modal {
-      background-color: var(--card-bg);
-      border: 1px solid var(--accent-gold);
-      padding: 2rem;
-      border-radius: 8px;
+      background: #121216;
+      border: 1px solid var(--gold-primary);
+      border-radius: 16px;
+      padding: 2.2rem;
       width: 100%;
-      max-width: 450px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      max-width: 480px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
     }
 
     .modal h2 {
-      color: var(--accent-gold);
-      margin-bottom: 1.5rem;
-      font-size: 1.3rem;
+      font-family: var(--font-serif);
+      color: var(--gold-light);
+      font-size: 1.4rem;
       text-align: center;
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .tab-group {
       display: flex;
       margin-bottom: 1.5rem;
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .tab {
       flex: 1;
-      padding: 0.6rem;
+      padding: 0.7rem;
       text-align: center;
       cursor: pointer;
       color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
       border-bottom: 2px solid transparent;
+      transition: all 0.25s ease;
     }
 
     .tab.active {
-      color: var(--accent-gold);
-      border-bottom: 2px solid var(--accent-gold);
-      font-weight: 600;
+      color: var(--gold-light);
+      border-bottom-color: var(--gold-primary);
     }
 
     .form-group {
@@ -208,116 +477,41 @@
 
     .form-group label {
       display: block;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
+      color: var(--text-muted);
       margin-bottom: 0.4rem;
-      color: var(--accent-silver);
+      font-weight: 500;
     }
 
-    .form-group input, .form-group select {
+    .form-control {
       width: 100%;
-    }
-
-    .grid-layout {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-
-    @media (min-width: 768px) {
-      .grid-layout {
-        grid-template-columns: 350px 1fr;
-      }
-    }
-
-    .card {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 1.5rem;
-    }
-
-    .card h3 {
-      color: var(--accent-gold);
-      margin-bottom: 1rem;
-      font-size: 1.1rem;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 0.5rem;
-    }
-
-    .student-cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 1.2rem;
-    }
-
-    .student-card {
-      background-color: #161b22;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-    }
-
-    .student-img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-      background-color: #0b0c10;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .student-info {
-      padding: 1rem;
-      flex: 1;
-    }
-
-    .student-name {
-      color: #fff;
-      font-weight: 600;
-      font-size: 1rem;
-      margin-bottom: 0.2rem;
-    }
-
-    .student-class {
-      color: var(--accent-gold);
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 0.8rem;
-    }
-
-    .student-detail {
-      font-size: 0.85rem;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       color: var(--text-main);
-      margin-bottom: 0.3rem;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: all 0.25s ease;
     }
 
-    .student-detail strong {
-      color: var(--accent-silver);
-    }
-
-    .card-actions {
-      padding: 0.8rem 1rem;
-      border-top: 1px solid var(--border-color);
-      background-color: rgba(0,0,0,0.2);
-      display: flex;
-      justify-content: flex-end;
+    .form-control:focus {
+      border-color: var(--gold-primary);
+      background: rgba(212, 175, 55, 0.05);
     }
 
     footer {
-      background-color: #050505;
-      border-top: 1px solid var(--border-color);
+      background: #040405;
+      border-top: 1px solid rgba(212, 175, 55, 0.15);
       text-align: center;
-      padding: 1.5rem;
-      margin-top: auto;
+      padding: 2rem;
+      margin-top: 4rem;
       font-size: 0.85rem;
       color: var(--text-muted);
     }
 
     footer a {
-      color: var(--accent-gold);
+      color: var(--gold-primary);
       text-decoration: none;
       font-weight: 600;
     }
@@ -329,200 +523,225 @@
 </head>
 <body>
 
+  <!-- Top Header Navigation -->
   <header>
-    <div class="brand">
-      <h1 id="txt-title">Kolej Tingkatan Enam Pra-Universiti Astana</h1>
-      <p id="txt-subtitle">Portal Pengurusan & Hal Tuju Pelajar</p>
+    <div class="brand-container">
+      <div class="brand-logo-badge">K</div>
+      <div class="brand-text">
+        <h1 id="txt-title">KOLEJ TINGKATAN ENAM PRA-UNIVERSITI ASTANA</h1>
+        <p id="txt-subtitle">PORTAL LALUAN MASA DEPAN & KERJAYA</p>
+      </div>
     </div>
-    <div class="controls">
-      <select id="lang-select">
-        <option value="bm">Bahasa Melayu</option>
-        <option value="en">English</option>
+
+    <div class="header-controls">
+      <div class="status-pill">
+        <span class="status-badge" id="user-badge">PELAWAT</span>
+        <span class="status-user" id="user-display-name">User</span>
+      </div>
+
+      <button id="auth-btn" class="btn btn-outline" onclick="openAuthModal('student')">
+        <span>🔑</span> <span id="txt-login-btn">LOG MASUK</span>
+      </button>
+
+      <button id="logout-btn" class="btn btn-outline hidden" onclick="logout()">
+        <span id="txt-logout-btn">LOG KELUAR</span>
+      </button>
+
+      <select id="lang-select" class="lang-select">
+        <option value="bm">Bahasa Melayu (BM)</option>
+        <option value="en">English (EN)</option>
       </select>
-      <button id="auth-btn" class="secondary" onclick="openAuthModal()">Log Masuk</button>
     </div>
   </header>
 
-  <div class="container">
-    <div class="auth-banner">
-      <div class="user-status">
-        <span id="txt-status-label">Status Akses:</span>
-        <strong id="user-display-name">Pelawat (Lihat Sahaja)</strong>
-        <span id="user-badge" class="badge badge-student hidden">Pelajar</span>
-      </div>
-      <button id="logout-btn" class="secondary hidden" onclick="logout()" style="padding: 0.3rem 0.8rem; font-size: 0.8rem;">Log Keluar</button>
-    </div>
+  <!-- Main Content Container -->
+  <main class="main-container">
+    
+    <!-- Hero Banner Section matching exact screenshot layout -->
+    <section class="hero-card">
+      <div class="hero-tag" id="txt-hero-tag">PORTAL RASMI PELAJAR KTE PRA-U ASTANA</div>
+      
+      <h2 class="hero-title" id="txt-hero-title">
+        KOLEJ TINGKATAN ENAM PRA-UNIVERSITI ASTANA<br>
+        <span>DIREKTORI LALUAN KERJAYA & PENGAJIAN TINGGI</span>
+      </h2>
 
-    <div class="grid-layout">
-      <!-- Form Input Panel -->
-      <div class="card" id="profile-form-card">
-        <h3 id="txt-form-heading">Borang Hal Tuju Pelajar</h3>
-        <p id="txt-login-prompt" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
-          Sila log masuk sebagai Pelajar untuk mengisi atau mengemas kini data profil anda.
-        </p>
+      <p class="hero-desc" id="txt-hero-desc">
+        Pengumpulan data aspirasi pelajar, sasaran universiti, dan cita-cita masa depan. Daftar profil anda atau semak maklumat rakan seangkatan.
+      </p>
 
-        <form id="student-form" class="hidden" onsubmit="saveProfile(event)">
-          <div class="form-group">
-            <label id="lbl-name">Nama Penuh Pelajar</label>
-            <input type="text" id="input-name" required>
-          </div>
-
-          <div class="form-group">
-            <label id="lbl-class">Kelas / Modul</label>
-            <input type="text" id="input-class" placeholder="Cth: 6 Bawah STEM / Humaniti" required>
-          </div>
-
-          <div class="form-group">
-            <label id="lbl-uni">Pilihan Universiti & Kursus</label>
-            <input type="text" id="input-uni" placeholder="Cth: UM - Ijazah Sarjana Muda Sains Komputer" required>
-          </div>
-
-          <div class="form-group">
-            <label id="lbl-ambition">Cita-Cita</label>
-            <input type="text" id="input-ambition" placeholder="Cth: Jurutera Perisian" required>
-          </div>
-
-          <div class="form-group">
-            <label id="lbl-photo">Muat Naik Gambar (Format JPG / PNG)</label>
-            <input type="file" id="input-file" accept="image/png, image/jpeg, image/jpg" onchange="handleImageUpload(event)" style="margin-bottom: 0.5rem;">
-            <input type="url" id="input-photo-url" placeholder="Atau masukkan pautan URL gambar (https://...)" onchange="handleUrlInput(event)">
-          </div>
-
-          <button type="submit" style="width: 100%;" id="btn-save">Simpan Maklumat Profil</button>
-        </form>
+      <div class="hero-actions">
+        <button class="btn btn-gold" onclick="handleProfileFormAction()">
+          <span>💳</span> <span id="txt-btn-profile">DAFTAR / KEMASKINI PROFIL SAYA</span>
+        </button>
+        <button class="btn btn-outline-gold" onclick="openAuthModal('teacher')">
+          <span>👨‍🏫</span> <span id="txt-btn-teacher">DAFTAR AKAUN GURU</span>
+        </button>
       </div>
 
-      <!-- Student Directory Panel -->
-      <div class="card">
-        <h3 id="txt-directory-heading">Direktori Hal Tuju Pelajar</h3>
-        <div id="student-list" class="student-cards-grid">
-          <!-- Profiles injected dynamically -->
-        </div>
+      <div class="scroll-indicator">
+        <a href="#directory-section" class="scroll-btn" title="Scroll Down">↓</a>
       </div>
-    </div>
-  </div>
+    </section>
 
+    <!-- Directory Section -->
+    <section id="directory-section">
+      <h3 class="section-title" id="txt-directory-heading">DIREKTORI PELAJAR</h3>
+      <div id="student-list" class="cards-grid">
+        <!-- Dynamically injected student profile cards -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
   <footer>
     <p>&copy; 2026 Kolej Tingkatan Enam Pra-Universiti Astana. Hak Cipta Terpelihara.</p>
-    <p style="margin-top: 0.5rem;">
+    <p style="margin-top: 0.6rem;">
       <a href="https://share.google/EagNtZ4cgiz7LCSOc" target="_blank" id="txt-upu-link">e-Panduan UPUOnline</a>
     </p>
   </footer>
 
-  <!-- Modal Authentication -->
+  <!-- Modal Form: Profile Entry -->
+  <div class="modal-overlay hidden" id="profile-modal">
+    <div class="modal">
+      <h2 id="txt-modal-profile-title">Profil Hal Tuju Saya</h2>
+      <form id="student-form" onsubmit="saveProfile(event)">
+        <div class="form-group">
+          <label id="lbl-name">Nama Penuh Pelajar</label>
+          <input type="text" id="input-name" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+          <label id="lbl-class">Kelas / Modul</label>
+          <input type="text" id="input-class" class="form-control" placeholder="Cth: 6 Bawah STEM / Humaniti" required>
+        </div>
+
+        <div class="form-group">
+          <label id="lbl-uni">Pilihan Universiti & Kursus</label>
+          <input type="text" id="input-uni" class="form-control" placeholder="Cth: UM - Ijazah Sarjana Muda Sains Komputer" required>
+        </div>
+
+        <div class="form-group">
+          <label id="lbl-ambition">Cita-Cita Masa Depan</label>
+          <input type="text" id="input-ambition" class="form-control" placeholder="Cth: Jurutera Perisian" required>
+        </div>
+
+        <div class="form-group">
+          <label id="lbl-photo">Gambar Profil (Muat Naik Imej JPG / PNG)</label>
+          <input type="file" id="input-file" accept="image/png, image/jpeg, image/jpg" class="form-control" onchange="handleImageUpload(event)" style="margin-bottom: 0.5rem;">
+          <input type="url" id="input-photo-url" class="form-control" placeholder="Atau pautan URL Gambar (https://...)" onchange="handleUrlInput(event)">
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+          <button type="submit" class="btn btn-gold" style="flex: 1;" id="btn-save">Simpan Profil</button>
+          <button type="button" class="btn btn-outline" onclick="closeProfileModal()">Batal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Form: Authentication -->
   <div class="modal-overlay hidden" id="auth-modal">
     <div class="modal">
-      <h2 id="txt-modal-title">Log Masuk / Daftar</h2>
+      <h2>LOG MASUK / DAFTAR</h2>
 
       <div class="tab-group">
         <div class="tab active" id="tab-student" onclick="switchTab('student')">Pelajar</div>
         <div class="tab" id="tab-teacher" onclick="switchTab('teacher')">Guru / Cikgu</div>
       </div>
 
-      <!-- Student Auth Form -->
+      <!-- Student Login Form -->
       <div id="form-student-auth">
         <div class="form-group">
           <label>E-mel Pelajar</label>
-          <input type="email" id="student-email" required>
+          <input type="email" id="student-email" class="form-control" required>
         </div>
         <div class="form-group">
-          <label id="lbl-student-pass">Kata Laluan</label>
-          <input type="password" id="student-pass" required>
+          <label>Kata Laluan</label>
+          <input type="password" id="student-pass" class="form-control" required>
         </div>
-        <button type="button" style="width: 100%; margin-top: 0.5rem;" onclick="loginStudent()">Log Masuk Pelajar</button>
+        <button type="button" class="btn btn-gold" style="width: 100%; margin-top: 0.5rem;" onclick="loginStudent()">Log Masuk Pelajar</button>
       </div>
 
       <!-- Teacher Auth Form -->
       <div id="form-teacher-auth" class="hidden">
         <div class="tab-group" style="margin-bottom: 1rem;">
           <div class="tab active" id="subtab-t-login" onclick="switchTeacherSubTab('login')">Log Masuk</div>
-          <div class="tab" id="subtab-t-register" onclick="switchTeacherSubTab('register')">Daftar Akaun Guru</div>
+          <div class="tab" id="subtab-t-register" onclick="switchTeacherSubTab('register')">Daftar Guru</div>
         </div>
 
-        <!-- Teacher Login -->
         <div id="teacher-login-box">
           <div class="form-group">
-            <label>E-mel Guru (Peribadi / Sebarang E-mel)</label>
-            <input type="email" id="teacher-login-email" required>
+            <label>E-mel Guru</label>
+            <input type="email" id="teacher-login-email" class="form-control" required>
           </div>
           <div class="form-group">
             <label>Kata Laluan</label>
-            <input type="password" id="teacher-login-pass" required>
+            <input type="password" id="teacher-login-pass" class="form-control" required>
           </div>
-          <button type="button" style="width: 100%; margin-top: 0.5rem;" onclick="loginTeacher()">Log Masuk Guru</button>
+          <button type="button" class="btn btn-gold" style="width: 100%; margin-top: 0.5rem;" onclick="loginTeacher()">Log Masuk Guru</button>
         </div>
 
-        <!-- Teacher Register -->
         <div id="teacher-register-box" class="hidden">
           <div class="form-group">
-            <label>E-mel Peribadi Guru</label>
-            <input type="email" id="teacher-reg-email" placeholder="nama@gmail.com" required>
+            <label>E-mel Guru</label>
+            <input type="email" id="teacher-reg-email" class="form-control" placeholder="nama@gmail.com" required>
           </div>
           <div class="form-group">
-            <label>Kata Laluan Cikgu</label>
-            <input type="password" id="teacher-reg-pass" required>
+            <label>Kata Laluan Baru</label>
+            <input type="password" id="teacher-reg-pass" class="form-control" required>
           </div>
           <div class="form-group">
             <label>Kod Pengesahan Staf</label>
-            <input type="password" id="teacher-reg-key" required>
+            <input type="password" id="teacher-reg-key" class="form-control" required>
           </div>
-          <button type="button" style="width: 100%; margin-top: 0.5rem;" onclick="registerTeacher()">Daftar Akaun Guru</button>
+          <button type="button" class="btn btn-gold" style="width: 100%; margin-top: 0.5rem;" onclick="registerTeacher()">Daftar Akaun Guru</button>
         </div>
       </div>
 
       <div style="text-align: center; margin-top: 1.5rem;">
-        <button type="button" class="secondary" onclick="closeAuthModal()" style="font-size: 0.8rem;" id="btn-close-modal">Batal</button>
+        <button type="button" class="btn btn-outline" onclick="closeAuthModal()" style="padding: 0.4rem 1rem;">Tutup</button>
       </div>
     </div>
   </div>
 
   <script>
+    // Dual Language Dictionary
     const i18n = {
       bm: {
-        title: "Kolej Tingkatan Enam Pra-Universiti Astana",
-        subtitle: "Portal Pengurusan & Hal Tuju Pelajar",
-        statusLabel: "Status Akses:",
-        guest: "Pelawat (Lihat Sahaja)",
-        loginBtn: "Log Masuk",
-        logoutBtn: "Log Keluar",
-        formHeading: "Borang Hal Tuju Pelajar",
-        loginPrompt: "Sila log masuk sebagai Pelajar untuk mengisi atau mengemas kini data profil anda.",
-        lblName: "Nama Penuh Pelajar",
-        lblClass: "Kelas / Modul",
-        lblUni: "Pilihan Universiti & Kursus",
-        lblAmbition: "Cita-Cita",
-        lblPhoto: "Muat Naik Gambar (JPG / PNG)",
-        btnSave: "Simpan Maklumat Profil",
-        directoryHeading: "Direktori Hal Tuju Pelajar",
+        title: "KOLEJ TINGKATAN ENAM PRA-UNIVERSITI ASTANA",
+        subtitle: "PORTAL LALUAN MASA DEPAN & KERJAYA",
+        heroTag: "PORTAL RASMI PELAJAR KTE PRA-U ASTANA",
+        heroTitle: "KOLEJ TINGKATAN ENAM PRA-UNIVERSITI ASTANA<br><span>DIREKTORI LALUAN KERJAYA & PENGAJIAN TINGGI</span>",
+        heroDesc: "Pengumpulan data aspirasi pelajar, sasaran universiti, dan cita-cita masa depan. Daftar profil anda atau semak maklumat rakan seangkatan.",
+        btnProfile: "DAFTAR / KEMASKINI PROFIL SAYA",
+        btnTeacher: "DAFTAR AKAUN GURU",
+        directoryHeading: "DIREKTORI PELAJAR",
         upuLink: "e-Panduan UPUOnline",
-        noData: "Tiada rekod pelajar lagi.",
-        deleteBtn: "Padam Profil",
-        badgeTeacher: "GURU",
+        badgeGuest: "PELAWAT",
         badgeStudent: "PELAJAR",
-        confirmDelete: "Adakah anda pasti mahu memadamkan rekod pelajar ini?"
+        badgeTeacher: "GURU",
+        deleteBtn: "Padam Profil",
+        noData: "Tiada rekod profil pelajar ditemui.",
+        confirmDelete: "Adakah anda pasti mahu memadamkan profil ini?"
       },
       en: {
-        title: "Kolej Tingkatan Enam Pra-Universiti Astana",
-        subtitle: "Student Career & Pathway Portal",
-        statusLabel: "Access Status:",
-        guest: "Visitor (View Only)",
-        loginBtn: "Log In",
-        logoutBtn: "Log Out",
-        formHeading: "Student Pathway Form",
-        loginPrompt: "Please log in as a Student to complete or update your profile details.",
-        lblName: "Student Full Name",
-        lblClass: "Class / Module",
-        lblUni: "Preferred University & Course",
-        lblAmbition: "Career Ambition",
-        lblPhoto: "Upload Photo (JPG / PNG)",
-        btnSave: "Save Profile Details",
-        directoryHeading: "Student Pathways Directory",
+        title: "KOLEJ TINGKATAN ENAM PRA-UNIVERSITI ASTANA",
+        subtitle: "STUDENT CAREER & PATHWAY PORTAL",
+        heroTag: "OFFICIAL STUDENT PORTAL KTE PRA-U ASTANA",
+        heroTitle: "KOLEJ TINGKATAN ENAM PRA-UNIVERSITI ASTANA<br><span>CAREER & HIGHER EDUCATION DIRECTORY</span>",
+        heroDesc: "Collection of student aspirations, target universities, and future ambitions. Register your profile or view fellow classmates' details.",
+        btnProfile: "REGISTER / UPDATE MY PROFILE",
+        btnTeacher: "REGISTER TEACHER ACCOUNT",
+        directoryHeading: "STUDENT DIRECTORY",
         upuLink: "e-Panduan UPUOnline (Guide)",
-        noData: "No student profiles found.",
-        deleteBtn: "Delete Profile",
-        badgeTeacher: "TEACHER",
+        badgeGuest: "VISITOR",
         badgeStudent: "STUDENT",
-        confirmDelete: "Are you sure you want to delete this student profile?"
+        badgeTeacher: "TEACHER",
+        deleteBtn: "Delete Profile",
+        noData: "No student profiles found.",
+        confirmDelete: "Are you sure you want to delete this profile?"
       }
     };
 
@@ -569,23 +788,23 @@
       const t = i18n[currentLang];
       document.getElementById('txt-title').innerText = t.title;
       document.getElementById('txt-subtitle').innerText = t.subtitle;
-      document.getElementById('txt-status-label').innerText = t.statusLabel;
-      document.getElementById('auth-btn').innerText = t.loginBtn;
-      document.getElementById('logout-btn').innerText = t.logoutBtn;
-      document.getElementById('txt-form-heading').innerText = t.formHeading;
-      document.getElementById('txt-login-prompt').innerText = t.loginPrompt;
-      document.getElementById('lbl-name').innerText = t.lblName;
-      document.getElementById('lbl-class').innerText = t.lblClass;
-      document.getElementById('lbl-uni').innerText = t.lblUni;
-      document.getElementById('lbl-ambition').innerText = t.lblAmbition;
-      document.getElementById('lbl-photo').innerText = t.lblPhoto;
-      document.getElementById('btn-save').innerText = t.btnSave;
+      document.getElementById('txt-hero-tag').innerText = t.heroTag;
+      document.getElementById('txt-hero-title').innerHTML = t.heroTitle;
+      document.getElementById('txt-hero-desc').innerText = t.heroDesc;
+      document.getElementById('txt-btn-profile').innerText = t.btnProfile;
+      document.getElementById('txt-btn-teacher').innerText = t.btnTeacher;
       document.getElementById('txt-directory-heading').innerText = t.directoryHeading;
       document.getElementById('txt-upu-link').innerText = t.upuLink;
 
       if (!currentUser) {
-        document.getElementById('user-display-name').innerText = t.guest;
+        document.getElementById('user-badge').innerText = t.badgeGuest;
+        document.getElementById('user-display-name').innerText = "User";
+      } else if (currentUser.role === 'student') {
+        document.getElementById('user-badge').innerText = t.badgeStudent;
+      } else if (currentUser.role === 'teacher') {
+        document.getElementById('user-badge').innerText = t.badgeTeacher;
       }
+
       renderProfiles();
     }
 
@@ -594,7 +813,7 @@
       listContainer.innerHTML = '';
 
       if (studentProfiles.length === 0) {
-        listContainer.innerHTML = `<p style="color: var(--text-muted); font-size: 0.9rem;">${i18n[currentLang].noData}</p>`;
+        listContainer.innerHTML = `<p style="color: var(--text-muted); font-size: 0.95rem;">${i18n[currentLang].noData}</p>`;
         return;
       }
 
@@ -605,16 +824,18 @@
         const defaultImg = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=400&q=80";
 
         card.innerHTML = `
-          <img src="${profile.photoUrl || defaultImg}" class="student-img" alt="${profile.name}" onerror="this.src='${defaultImg}'">
+          <div class="student-img-container">
+            <img src="${profile.photoUrl || defaultImg}" class="student-img" alt="${profile.name}" onerror="this.src='${defaultImg}'">
+          </div>
           <div class="student-info">
             <div class="student-name">${escapeHtml(profile.name)}</div>
             <div class="student-class">${escapeHtml(profile.studentClass)}</div>
-            <div class="student-detail"><strong>Uni:</strong> ${escapeHtml(profile.university)}</div>
-            <div class="student-detail"><strong>Cita-cita:</strong> ${escapeHtml(profile.ambition)}</div>
+            <div class="student-meta"><strong>Uni:</strong> ${escapeHtml(profile.university)}</div>
+            <div class="student-meta"><strong>Cita-cita:</strong> ${escapeHtml(profile.ambition)}</div>
           </div>
           ${currentUser && currentUser.role === 'teacher' ? `
-            <div class="card-actions">
-              <button class="danger" style="padding: 0.3rem 0.6rem; font-size: 0.75rem;" onclick="deleteProfile(${profile.id})">
+            <div class="student-actions">
+              <button class="btn btn-danger" style="padding: 0.3rem 0.6rem; font-size: 0.72rem;" onclick="deleteProfile(${profile.id})">
                 ${i18n[currentLang].deleteBtn}
               </button>
             </div>
@@ -624,12 +845,41 @@
       });
     }
 
-    function openAuthModal() {
+    function openAuthModal(role = 'student') {
+      switchTab(role);
       document.getElementById('auth-modal').classList.remove('hidden');
     }
 
     function closeAuthModal() {
       document.getElementById('auth-modal').classList.add('hidden');
+    }
+
+    function handleProfileFormAction() {
+      if (!currentUser) {
+        openAuthModal('student');
+      } else if (currentUser.role === 'student') {
+        openProfileModal();
+      } else {
+        alert("Sila log masuk sebagai Pelajar untuk menambah/mengemaskini profil.");
+      }
+    }
+
+    function openProfileModal() {
+      if (currentUser && currentUser.role === 'student') {
+        const existing = studentProfiles.find(p => p.email === currentUser.email);
+        if (existing) {
+          document.getElementById('input-name').value = existing.name;
+          document.getElementById('input-class').value = existing.studentClass;
+          document.getElementById('input-uni').value = existing.university;
+          document.getElementById('input-ambition').value = existing.ambition;
+          document.getElementById('input-photo-url').value = existing.photoUrl;
+        }
+      }
+      document.getElementById('profile-modal').classList.remove('hidden');
+    }
+
+    function closeProfileModal() {
+      document.getElementById('profile-modal').classList.add('hidden');
     }
 
     function switchTab(role) {
@@ -702,31 +952,13 @@
       document.getElementById('logout-btn').classList.remove('hidden');
 
       const badge = document.getElementById('user-badge');
-      badge.classList.remove('hidden');
-
       if (currentUser.role === 'teacher') {
-        document.getElementById('user-display-name').innerText = currentUser.email;
+        document.getElementById('user-display-name').innerText = currentUser.email.split('@')[0];
         badge.innerText = i18n[currentLang].badgeTeacher;
-        badge.className = "badge badge-teacher";
-        
-        document.getElementById('txt-login-prompt').classList.remove('hidden');
-        document.getElementById('student-form').classList.add('hidden');
       } else {
-        document.getElementById('user-display-name').innerText = currentUser.email;
+        document.getElementById('user-display-name').innerText = currentUser.email.split('@')[0];
         badge.innerText = i18n[currentLang].badgeStudent;
-        badge.className = "badge badge-student";
-
-        document.getElementById('txt-login-prompt').classList.add('hidden');
-        document.getElementById('student-form').classList.remove('hidden');
-
-        const existing = studentProfiles.find(p => p.email === currentUser.email);
-        if (existing) {
-          document.getElementById('input-name').value = existing.name;
-          document.getElementById('input-class').value = existing.studentClass;
-          document.getElementById('input-uni').value = existing.university;
-          document.getElementById('input-ambition').value = existing.ambition;
-          document.getElementById('input-photo-url').value = existing.photoUrl;
-        }
+        openProfileModal();
       }
 
       renderProfiles();
@@ -736,18 +968,14 @@
       currentUser = null;
       document.getElementById('auth-btn').classList.remove('hidden');
       document.getElementById('logout-btn').classList.add('hidden');
-      document.getElementById('user-badge').classList.add('hidden');
-      document.getElementById('user-display-name').innerText = i18n[currentLang].guest;
-
-      document.getElementById('txt-login-prompt').classList.remove('hidden');
-      document.getElementById('student-form').classList.add('hidden');
-      document.getElementById('student-form').reset();
+      document.getElementById('user-badge').innerText = i18n[currentLang].badgeGuest;
+      document.getElementById('user-display-name').innerText = "User";
       uploadedImageBase64 = "";
 
       renderProfiles();
     }
 
-    // Optimized image compressor for JPG/PNG uploads (prevents slow loading & lag)
+    // High performance JPG / PNG image compressor to guarantee zero lag
     function handleImageUpload(e) {
       const file = e.target.files[0];
       if (file) {
@@ -756,7 +984,7 @@
           const img = new Image();
           img.onload = function() {
             const canvas = document.createElement('canvas');
-            const MAX_SIZE = 400; // Optimal thumbnail dimensions
+            const MAX_SIZE = 450;
             let width = img.width;
             let height = img.height;
 
@@ -777,9 +1005,8 @@
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, width, height);
             
-            // Compress image to lightweight JPEG string format
-            uploadedImageBase64 = canvas.toDataURL('image/jpeg', 0.8);
-            document.getElementById('input-photo-url').value = ""; // clear URL field if file is uploaded
+            uploadedImageBase64 = canvas.toDataURL('image/jpeg', 0.82);
+            document.getElementById('input-photo-url').value = "";
           };
           img.src = event.target.result;
         };
@@ -790,7 +1017,7 @@
     function handleUrlInput(e) {
       if (e.target.value.trim() !== "") {
         uploadedImageBase64 = "";
-        document.getElementById('input-file').value = ""; // clear file input if URL is used
+        document.getElementById('input-file').value = "";
       }
     }
 
@@ -823,6 +1050,7 @@
 
       localStorage.setItem('ktea_students', JSON.stringify(studentProfiles));
       alert("Profil berjaya disimpan!");
+      closeProfileModal();
       renderProfiles();
     }
 
