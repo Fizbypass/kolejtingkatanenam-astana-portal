@@ -318,23 +318,28 @@
       transform: translateY(3px);
     }
 
-    /* Content Cards Grid */
+    /* Directory Section & Class Filter Bar */
+    .section-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
     .section-title {
       font-family: var(--font-serif);
       color: var(--gold-light);
       font-size: 1.5rem;
       letter-spacing: 1px;
-      margin-bottom: 1.5rem;
+      margin: 0;
+    }
+
+    .filter-box {
       display: flex;
       align-items: center;
       gap: 0.8rem;
-    }
-
-    .section-title::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(90deg, rgba(212, 175, 55, 0.3) 0%, transparent 100%);
     }
 
     .cards-grid {
@@ -587,9 +592,17 @@
       </div>
     </section>
 
-    <!-- Directory Section -->
+    <!-- Directory Section with Class Filter Bar -->
     <section id="directory-section">
-      <h3 class="section-title" id="txt-directory-heading">DIREKTORI PELAJAR</h3>
+      <div class="section-header-flex">
+        <h3 class="section-title" id="txt-directory-heading">DIREKTORI PELAJAR</h3>
+        <div class="filter-box">
+          <label id="txt-filter-label" style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">Tapis Kelas:</label>
+          <select id="class-filter" class="lang-select" onchange="renderProfiles()">
+            <option value="all">Semua Kelas / All Classes</option>
+          </select>
+        </div>
+      </div>
       <div id="student-list" class="cards-grid">
         <!-- Dynamically injected student profile cards -->
       </div>
@@ -761,6 +774,8 @@
         btnProfile: "DAFTAR / KEMASKINI PROFIL SAYA",
         btnTeacher: "DAFTAR AKAUN GURU",
         directoryHeading: "DIREKTORI PELAJAR",
+        filterLabel: "Tapis Kelas:",
+        allClassesOption: "Semua Kelas",
         upuLink: "e-Panduan UPUOnline",
         badgeGuest: "PELAWAT",
         badgeStudent: "PELAJAR",
@@ -778,6 +793,8 @@
         btnProfile: "REGISTER / UPDATE MY PROFILE",
         btnTeacher: "REGISTER TEACHER ACCOUNT",
         directoryHeading: "STUDENT DIRECTORY",
+        filterLabel: "Filter Class:",
+        allClassesOption: "All Classes",
         upuLink: "e-Panduan UPUOnline (Guide)",
         badgeGuest: "VISITOR",
         badgeStudent: "STUDENT",
@@ -823,6 +840,7 @@
       document.getElementById('txt-btn-profile').innerText = t.btnProfile;
       document.getElementById('txt-btn-teacher').innerText = t.btnTeacher;
       document.getElementById('txt-directory-heading').innerText = t.directoryHeading;
+      document.getElementById('txt-filter-label').innerText = t.filterLabel;
       document.getElementById('txt-upu-link').innerText = t.upuLink;
 
       if (!currentUser) {
@@ -841,12 +859,41 @@
       const listContainer = document.getElementById('student-list');
       listContainer.innerHTML = '';
 
-      if (studentProfiles.length === 0) {
+      // Populate Class Filter Dropdown Dynamically
+      const filterSelect = document.getElementById('class-filter');
+      const selectedFilter = filterSelect ? filterSelect.value : 'all';
+      
+      const uniqueClasses = [...new Set(studentProfiles.map(p => p.studentClass).filter(Boolean))].sort();
+      
+      if (filterSelect) {
+        let optionsHTML = `<option value="all">${i18n[currentLang].allClassesOption}</option>`;
+        uniqueClasses.forEach(cls => {
+          optionsHTML += `<option value="${escapeHtml(cls)}" ${selectedFilter === cls ? 'selected' : ''}>${escapeHtml(cls)}</option>`;
+        });
+        filterSelect.innerHTML = optionsHTML;
+      }
+
+      // Filter Profiles if a specific class is chosen
+      let filteredProfiles = studentProfiles;
+      if (filterSelect && filterSelect.value !== 'all') {
+        filteredProfiles = studentProfiles.filter(p => p.studentClass === filterSelect.value);
+      }
+
+      // Automatically sort data by class name then student name for clean class order
+      filteredProfiles.sort((a, b) => {
+        const classA = (a.studentClass || '').toLowerCase();
+        const classB = (b.studentClass || '').toLowerCase();
+        if (classA < classB) return -1;
+        if (classA > classB) return 1;
+        return (a.name || '').localeCompare(b.name || '');
+      });
+
+      if (filteredProfiles.length === 0) {
         listContainer.innerHTML = `<p style="color: var(--text-muted); font-size: 0.95rem;">${i18n[currentLang].noData}</p>`;
         return;
       }
 
-      studentProfiles.forEach(profile => {
+      filteredProfiles.forEach(profile => {
         const card = document.createElement('div');
         card.className = 'student-card';
 
