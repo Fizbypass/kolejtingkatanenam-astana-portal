@@ -795,10 +795,8 @@
     const SECRET_STAFF_KEY = "KTEASTANAFIZ";
 
     let studentProfiles = [];
-    let registeredTeachers = [];
-    let registeredStudents = [];
 
-    // Real-time Cloud Sync
+    // Real-time Cloud Sync for Profiles
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('lang-select').addEventListener('change', (e) => {
         currentLang = e.target.value;
@@ -810,17 +808,6 @@
         const data = snapshot.val();
         studentProfiles = data ? Object.values(data) : [];
         renderProfiles();
-      });
-
-      // Listen to Registered Users from Cloud Database
-      db.ref('users/students').on('value', (snapshot) => {
-        const data = snapshot.val();
-        registeredStudents = data ? Object.values(data) : [];
-      });
-
-      db.ref('users/teachers').on('value', (snapshot) => {
-        const data = snapshot.val();
-        registeredTeachers = data ? Object.values(data) : [];
       });
 
       updateLanguage();
@@ -910,11 +897,11 @@
       if (currentUser && currentUser.role === 'student') {
         const existing = studentProfiles.find(p => p.email === currentUser.email);
         if (existing) {
-          document.getElementById('input-name').value = existing.name;
-          document.getElementById('input-class').value = existing.studentClass;
-          document.getElementById('input-uni').value = existing.university;
-          document.getElementById('input-ambition').value = existing.ambition;
-          document.getElementById('input-photo-url').value = existing.photoUrl;
+          document.getElementById('input-name').value = existing.name || '';
+          document.getElementById('input-class').value = existing.studentClass || '';
+          document.getElementById('input-uni').value = existing.university || '';
+          document.getElementById('input-ambition').value = existing.ambition || '';
+          document.getElementById('input-photo-url').value = existing.photoUrl || '';
         }
       }
       document.getElementById('profile-modal').classList.remove('hidden');
@@ -945,6 +932,7 @@
       document.getElementById('teacher-register-box').classList.toggle('hidden', action !== 'register');
     }
 
+    // Direct Firebase Registration for Students
     function registerStudent() {
       const email = document.getElementById('student-reg-email').value.trim().toLowerCase();
       const pass = document.getElementById('student-reg-pass').value.trim();
@@ -960,22 +948,29 @@
         return;
       }
 
-      const existing = registeredStudents.find(s => s.email === email);
-      if (existing) {
-        alert("E-mel ini telah berdaftar. Sila log masuk.");
-        switchStudentSubTab('login');
-        document.getElementById('student-email').value = email;
-        return;
-      }
-
       const cleanKey = email.replace(/[^a-zA-Z0-9]/g, '_');
-      db.ref('users/students/' + cleanKey).set({ email, pass });
 
-      alert("Akaun pelajar berjaya didaftarkan secara atas talian! Sila log masuk.");
-      switchStudentSubTab('login');
-      document.getElementById('student-email').value = email;
+      // Check if user already exists directly in Firebase
+      db.ref('users/students/' + cleanKey).once('value', (snapshot) => {
+        if (snapshot.exists()) {
+          alert("E-mel ini telah berdaftar. Sila log masuk.");
+          switchStudentSubTab('login');
+          document.getElementById('student-email').value = email;
+        } else {
+          db.ref('users/students/' + cleanKey).set({ email, pass }, (err) => {
+            if (err) {
+              alert("Gagal mendaftar: " + err.message);
+            } else {
+              alert("Akaun pelajar berjaya didaftarkan! Sila log masuk.");
+              switchStudentSubTab('login');
+              document.getElementById('student-email').value = email;
+            }
+          });
+        }
+      });
     }
 
+    // Direct Firebase Verification for Student Login
     function loginStudent() {
       const email = document.getElementById('student-email').value.trim().toLowerCase();
       const pass = document.getElementById('student-pass').value.trim();
@@ -985,16 +980,20 @@
         return;
       }
 
-      const found = registeredStudents.find(s => s.email === email && s.pass === pass);
+      const cleanKey = email.replace(/[^a-zA-Z0-9]/g, '_');
 
-      if (found) {
-        currentUser = { role: 'student', email: email };
-        onLoginSuccess();
-      } else {
-        alert("Akaun tidak wujud atau kata laluan salah. Sila semak semula atau daftar akaun baru.");
-      }
+      db.ref('users/students/' + cleanKey).once('value', (snapshot) => {
+        const userData = snapshot.val();
+        if (userData && userData.pass === pass) {
+          currentUser = { role: 'student', email: email };
+          onLoginSuccess();
+        } else {
+          alert("Akaun tidak wujud atau kata laluan salah. Sila semak semula atau daftar akaun baru.");
+        }
+      });
     }
 
+    // Direct Firebase Verification for Teacher Login
     function loginTeacher() {
       const email = document.getElementById('teacher-login-email').value.trim().toLowerCase();
       const pass = document.getElementById('teacher-login-pass').value.trim();
@@ -1004,16 +1003,20 @@
         return;
       }
 
-      const found = registeredTeachers.find(t => t.email === email && t.pass === pass);
+      const cleanKey = email.replace(/[^a-zA-Z0-9]/g, '_');
 
-      if (found) {
-        currentUser = { role: 'teacher', email: email };
-        onLoginSuccess();
-      } else {
-        alert("Akaun guru tidak wujud atau kata laluan salah.");
-      }
+      db.ref('users/teachers/' + cleanKey).once('value', (snapshot) => {
+        const userData = snapshot.val();
+        if (userData && userData.pass === pass) {
+          currentUser = { role: 'teacher', email: email };
+          onLoginSuccess();
+        } else {
+          alert("Akaun guru tidak wujud atau kata laluan salah.");
+        }
+      });
     }
 
+    // Direct Firebase Registration for Teachers
     function registerTeacher() {
       const email = document.getElementById('teacher-reg-email').value.trim().toLowerCase();
       const pass = document.getElementById('teacher-reg-pass').value.trim();
@@ -1030,11 +1033,16 @@
       }
 
       const cleanKey = email.replace(/[^a-zA-Z0-9]/g, '_');
-      db.ref('users/teachers/' + cleanKey).set({ email, pass });
-      
-      alert("Akaun guru berjaya didaftarkan! Sila log masuk.");
-      switchTeacherSubTab('login');
-      document.getElementById('teacher-login-email').value = email;
+
+      db.ref('users/teachers/' + cleanKey).set({ email, pass }, (err) => {
+        if (err) {
+          alert("Gagal mendaftar guru: " + err.message);
+        } else {
+          alert("Akaun guru berjaya didaftarkan! Sila log masuk.");
+          switchTeacherSubTab('login');
+          document.getElementById('teacher-login-email').value = email;
+        }
+      });
     }
 
     function onLoginSuccess() {
@@ -1139,7 +1147,7 @@
       // Push to Firebase Realtime Cloud Database
       db.ref('students/' + cleanKey).set(profileData, (error) => {
         if (error) {
-          alert("Gagal menyimpan ke pangkalan data dalam talian.");
+          alert("Gagal menyimpan ke pangkalan data dalam talian: " + error.message);
         } else {
           alert("Profil berjaya disimpan & dikemas kini secara atas talian!");
           closeProfileModal();
