@@ -9,6 +9,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
+  <!-- Firebase Compatibility SDKs for Realtime Cloud Database -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
   <style>
     :root {
       --bg-dark: #08080a;
@@ -731,6 +735,21 @@
   </div>
 
   <script>
+    // Initialize Firebase Cloud Database
+    const firebaseConfig = {
+      apiKey: "AIzaSyA91bum6AAXc6Q26rLbiBEpXVUq3vjQzyw",
+      authDomain: "kteastanastudente-profiling.firebaseapp.com",
+      projectId: "kteastanastudente-profiling",
+      storageBucket: "kteastanastudente-profiling.firebasestorage.app",
+      messagingSenderId: "1096023373828",
+      appId: "1:1096023373828:web:b0ca2aa4ee3b1143a19d51",
+      measurementId: "G-11KTB8F086",
+      databaseURL: "https://kteastanastudente-profiling-default-rtdb.firebaseio.com"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
     // Dual Language Dictionary
     const i18n = {
       bm: {
@@ -775,40 +794,35 @@
 
     const SECRET_STAFF_KEY = "KTEASTANAFIZ";
 
-    let studentProfiles = JSON.parse(localStorage.getItem('ktea_students')) || [
-      {
-        id: 1,
-        name: "Ahmad Zaki Bin Rosli",
-        studentClass: "6B STEM 1",
-        university: "Universiti Malaya - Kejuruteraan Awam",
-        ambition: "Jurutera Awam",
-        photoUrl: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=400&q=80",
-        email: "zaki@gmail.com"
-      },
-      {
-        id: 2,
-        name: "Nur Sarah Binti Azman",
-        studentClass: "6B Kemanusiaan 2",
-        university: "Universiti Kebangsaan Malaysia - Undang-Undang",
-        ambition: "Peguam Syarie",
-        photoUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
-        email: "sarah@gmail.com"
-      }
-    ];
+    let studentProfiles = [];
+    let registeredTeachers = [];
+    let registeredStudents = [];
 
-    let registeredTeachers = JSON.parse(localStorage.getItem('ktea_teachers')) || [];
-    let registeredStudents = JSON.parse(localStorage.getItem('ktea_student_users')) || [
-      { email: "zaki@gmail.com", pass: "123456" },
-      { email: "sarah@gmail.com", pass: "123456" }
-    ];
-
+    // Real-time Cloud Sync
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('lang-select').addEventListener('change', (e) => {
         currentLang = e.target.value;
         updateLanguage();
       });
 
-      renderProfiles();
+      // Listen to Student Profiles from Cloud Database
+      db.ref('students').on('value', (snapshot) => {
+        const data = snapshot.val();
+        studentProfiles = data ? Object.values(data) : [];
+        renderProfiles();
+      });
+
+      // Listen to Registered Users from Cloud Database
+      db.ref('users/students').on('value', (snapshot) => {
+        const data = snapshot.val();
+        registeredStudents = data ? Object.values(data) : [];
+      });
+
+      db.ref('users/teachers').on('value', (snapshot) => {
+        const data = snapshot.val();
+        registeredTeachers = data ? Object.values(data) : [];
+      });
+
       updateLanguage();
     });
 
@@ -863,7 +877,7 @@
           </div>
           ${currentUser && currentUser.role === 'teacher' ? `
             <div class="student-actions">
-              <button class="btn btn-danger" style="padding: 0.3rem 0.6rem; font-size: 0.72rem;" onclick="deleteProfile(${profile.id})">
+              <button class="btn btn-danger" style="padding: 0.3rem 0.6rem; font-size: 0.72rem;" onclick="deleteProfile('${profile.key}')">
                 ${i18n[currentLang].deleteBtn}
               </button>
             </div>
@@ -954,10 +968,10 @@
         return;
       }
 
-      registeredStudents.push({ email, pass });
-      localStorage.setItem('ktea_student_users', JSON.stringify(registeredStudents));
+      const cleanKey = email.replace(/[^a-zA-Z0-9]/g, '_');
+      db.ref('users/students/' + cleanKey).set({ email, pass });
 
-      alert("Akaun pelajar berjaya didaftarkan! Sila log masuk.");
+      alert("Akaun pelajar berjaya didaftarkan secara atas talian! Sila log masuk.");
       switchStudentSubTab('login');
       document.getElementById('student-email').value = email;
     }
@@ -1015,8 +1029,8 @@
         return;
       }
 
-      registeredTeachers.push({ email, pass });
-      localStorage.setItem('ktea_teachers', JSON.stringify(registeredTeachers));
+      const cleanKey = email.replace(/[^a-zA-Z0-9]/g, '_');
+      db.ref('users/teachers/' + cleanKey).set({ email, pass });
       
       alert("Akaun guru berjaya didaftarkan! Sila log masuk.");
       switchTeacherSubTab('login');
@@ -1052,7 +1066,7 @@
       renderProfiles();
     }
 
-    // High performance JPG / PNG image compressor to guarantee zero lag
+    // Fast image compressor for seamless profile uploads
     function handleImageUpload(e) {
       const file = e.target.files[0];
       if (file) {
@@ -1110,33 +1124,33 @@
 
       const finalPhoto = uploadedImageBase64 || urlInput;
 
-      const index = studentProfiles.findIndex(p => p.email === currentUser.email);
+      const cleanKey = currentUser.email.replace(/[^a-zA-Z0-9]/g, '_');
 
-      if (index !== -1) {
-        studentProfiles[index] = {
-          ...studentProfiles[index],
-          name, studentClass, university, ambition, photoUrl: finalPhoto
-        };
-      } else {
-        studentProfiles.push({
-          id: Date.now(),
-          email: currentUser.email,
-          name, studentClass, university, ambition, photoUrl: finalPhoto
-        });
-      }
+      const profileData = {
+        key: cleanKey,
+        email: currentUser.email,
+        name,
+        studentClass,
+        university,
+        ambition,
+        photoUrl: finalPhoto
+      };
 
-      localStorage.setItem('ktea_students', JSON.stringify(studentProfiles));
-      alert("Profil berjaya disimpan!");
-      closeProfileModal();
-      renderProfiles();
+      // Push to Firebase Realtime Cloud Database
+      db.ref('students/' + cleanKey).set(profileData, (error) => {
+        if (error) {
+          alert("Gagal menyimpan ke pangkalan data dalam talian.");
+        } else {
+          alert("Profil berjaya disimpan & dikemas kini secara atas talian!");
+          closeProfileModal();
+        }
+      });
     }
 
-    function deleteProfile(id) {
+    function deleteProfile(key) {
       if (currentUser && currentUser.role === 'teacher') {
         if (confirm(i18n[currentLang].confirmDelete)) {
-          studentProfiles = studentProfiles.filter(p => p.id !== id);
-          localStorage.setItem('ktea_students', JSON.stringify(studentProfiles));
-          renderProfiles();
+          db.ref('students/' + key).remove();
         }
       }
     }
